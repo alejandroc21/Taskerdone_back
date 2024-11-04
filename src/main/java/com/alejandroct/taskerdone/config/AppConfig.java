@@ -1,7 +1,7 @@
 package com.alejandroct.taskerdone.config;
 
-import com.alejandroct.taskerdone.Model.User;
-import com.alejandroct.taskerdone.Repository.UserRepository;
+import com.alejandroct.taskerdone.model.User;
+import com.alejandroct.taskerdone.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +18,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class AppConfig {
 
-    private final UserRepository userRepository;
+    private final IUserService userService;
 
     @Bean
     public UserDetailsService userDetailsService(){
         return username -> {
-            User user = userRepository.findByEmail(username)
+            User user = userService.findByEmail(username)
                     .orElseThrow(()->new UsernameNotFoundException("User not found"));
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getEmail())

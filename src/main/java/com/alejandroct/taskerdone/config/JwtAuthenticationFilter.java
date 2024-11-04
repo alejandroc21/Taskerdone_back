@@ -1,8 +1,8 @@
 package com.alejandroct.taskerdone.config;
 
-import com.alejandroct.taskerdone.Model.User;
-import com.alejandroct.taskerdone.Repository.UserRepository;
-import com.alejandroct.taskerdone.Service.Auth.JwtService;
+import com.alejandroct.taskerdone.model.User;
+import com.alejandroct.taskerdone.service.auth.JwtService;
+import com.alejandroct.taskerdone.service.IUserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-    private final UserRepository userRepository;
+    private final IUserService userService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         final String token = getTokenFromRequest(request);
 
-        if (token == null) {
+        if (token == null || request.getServletPath().contains("/auth/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null){
-            Optional<User> user = userRepository.findByEmail(username);
+            Optional<User> user = userService.findByEmail(username);
             if(user.isPresent()){
                 if(jwtService.isTokenValid(token, user.get())){
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
