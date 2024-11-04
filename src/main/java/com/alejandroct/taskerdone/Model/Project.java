@@ -1,7 +1,7 @@
 package com.alejandroct.taskerdone.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,7 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotBlank(message = "Project name is missing")
     private String name;
 
     @OneToMany(targetEntity = Task.class, fetch = FetchType.LAZY, mappedBy = "project")

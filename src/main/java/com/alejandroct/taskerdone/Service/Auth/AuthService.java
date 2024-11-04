@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -21,6 +23,11 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public TokenResponse register(RegisterRequest request){
+        Optional<User> verifyUser = userRepository.findByEmail(request.email());
+        if(verifyUser.isPresent()){
+            throw new IllegalArgumentException("This email is already in use");
+        }
+
         User user = User.builder()
                 .name(request.name())
                 .email(request.email())

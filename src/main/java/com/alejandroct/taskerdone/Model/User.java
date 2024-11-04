@@ -21,17 +21,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
     @NotBlank(message = "name can't be empty")
+    @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "password can't be empty")
-    private String password;
-
     @Email(message = "you need a valid email format")
-    @Column(unique = true, nullable = false)
     @NotBlank(message = "email can't be empty")
+    @Column(nullable = false)
     private String email;
+
+    @NotBlank(message = "password can't be empty")
+    @Column(nullable = false)
+    private String password;
 
     @OneToMany(targetEntity = Project.class, fetch = FetchType.LAZY,mappedBy = "user")
     private List<Project> projects;

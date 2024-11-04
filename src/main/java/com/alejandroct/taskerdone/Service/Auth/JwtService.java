@@ -19,7 +19,7 @@ public class JwtService {
     @Value("${token.expiration}")
     private long tokenExpiration;
 
-    @Value("${jwt.secret.key")
+    @Value("${jwt.secret.key}")
     private String secretKey;
 
     private SecretKey getSecretKey(){
@@ -28,11 +28,10 @@ public class JwtService {
 
     public String buildToken(User user){
         return Jwts.builder()
-                .id(String.valueOf(user.getId()))
                 .claims(Map.of("name", user.getName()))
                 .subject(user.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+tokenExpiration))
+                .expiration(new Date(System.currentTimeMillis()+this.tokenExpiration))
                 .signWith(getSecretKey())
                 .compact();
     }

@@ -7,6 +7,7 @@ public record RegisterRequest(
 
         @NotBlank(message = "name can't be empty")
         String name,
+        @NotBlank(message = "email can't be empty")
         @Email(message = "you need a valid email format")
         String email,
         @NotBlank(message = "password can't be empty")
