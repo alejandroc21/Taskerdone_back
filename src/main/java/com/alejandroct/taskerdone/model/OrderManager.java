@@ -30,5 +30,5 @@ public class OrderManager {
      * You can store the id's like this "1,2,3".
      */
     @Pattern(regexp = "^$|^[\\d,]+$", message = "The value can only contain numbers separated by commas or remain empty.")
-    private String listIds="";
+    private String idsList="";
 }
