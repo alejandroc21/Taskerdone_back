@@ -49,11 +49,12 @@ public class ProjectService implements IProjectService {
 
     @Override
     public ProjectDTO update(String auth, ProjectDTO request) {
-        Optional<Project> verify = projectRepository.findById(request.id());
-        if (verify.isEmpty()){
+        Optional<Project> optional = projectRepository.findById(request.id());
+        if (optional.isEmpty()){
             throw new EntityNotFoundException("Project not found");
         }
-        Project project = Mappers.getProject(request, new OrderManager(), new User(jwtService.getUserIdFromToken(auth)));
+        Project project = optional.get();
+        project.setName(request.name());
         return Mappers.getProjectDTO(projectRepository.save(project));
     }
 

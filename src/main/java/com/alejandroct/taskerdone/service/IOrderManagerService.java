@@ -8,4 +8,8 @@ public interface IOrderManagerService {
     OrderManager update(OrderManager orderManager);
 
     List<OrderManager> updateMultiple(List<OrderManager> orderManagers);
+
+    OrderManager addIdToIdsList(long idOrderManager, long idToAdd, boolean addToEnd);
+
+    OrderManager removeIdFromIdsList(long idOrderManager, long idToRemove);
 }
