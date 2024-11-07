@@ -2,10 +2,8 @@ package com.alejandroct.taskerdone.mapper;
 
 import com.alejandroct.taskerdone.dto.ProjectDTO;
 import com.alejandroct.taskerdone.dto.StatusDTO;
-import com.alejandroct.taskerdone.model.OrderManager;
-import com.alejandroct.taskerdone.model.Project;
-import com.alejandroct.taskerdone.model.Status;
-import com.alejandroct.taskerdone.model.User;
+import com.alejandroct.taskerdone.dto.TaskDTO;
+import com.alejandroct.taskerdone.model.*;
 
 public class Mappers {
 
@@ -35,5 +33,18 @@ public class Mappers {
         status.setProject(project);
         status.setOrderManager(statusDTO.orderManager());
         return status;
+    }
+
+    public static TaskDTO getTaskDTO(Task task){
+        return new TaskDTO(task.getId(), task.getName(), task.getStatus(), task.getProject());
+    }
+
+    public static Task getTask(TaskDTO taskDTO){
+        Task task = new Task();
+        task.setId(taskDTO.id());
+        task.setName(taskDTO.name());
+        task.setStatus(taskDTO.status());
+        task.setProject(taskDTO.project());
+        return task;
     }
 }

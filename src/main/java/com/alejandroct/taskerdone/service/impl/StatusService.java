@@ -14,6 +14,7 @@ import com.alejandroct.taskerdone.service.IStatusService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,13 +36,15 @@ public class StatusService implements IStatusService {
 
     @Override
     public StatusDTO findById(long id) {
-        Optional<Status> optional = statusRepository.findById(id);
-        if (optional.isEmpty()){
-            throw new EntityNotFoundException("Status not found");
-        }
-        return Mappers.getStatusDTO(optional.get());
+        return Mappers.getStatusDTO(this.findStatusById(id));
     }
 
+    /**
+     * Create the Status and adds the id at the orderManager idsList.
+     * @param statusDTO
+     * @return statusDTO
+     */
+    @Transactional
     @Override
     public StatusDTO create(StatusDTO statusDTO) {
         ProjectDTO projectDTO = projectService.findById(statusDTO.project().id());
@@ -59,6 +62,7 @@ public class StatusService implements IStatusService {
         return Mappers.getStatusDTO(response);
     }
 
+    @Transactional
     @Override
     public List<StatusDTO> createMultiple(List<StatusDTO> statusDTOList) {
         Project project = statusDTOList.stream().map(
@@ -82,20 +86,31 @@ public class StatusService implements IStatusService {
 
     @Override
     public StatusDTO update(StatusDTO statusDTO) {
-        Optional<Status> optional = statusRepository.findById(statusDTO.id());
-        if (optional.isEmpty()){
-            throw new EntityNotFoundException("Status not found");
-        }
-        Status status = optional.get();
+        Status status = this.findStatusById(statusDTO.id());
         status.setName(statusDTO.name());
         return Mappers.getStatusDTO(statusRepository.save(status));
     }
 
+    /**
+     * Delete the Status and remove its id at the orderManager idsList.
+     * @param id
+     * @return String
+     */
+    @Transactional
     @Override
     public String delete(long id) {
         ProjectDTO projectDTO = projectService.findById(this.findById(id).project().id());
         statusRepository.deleteById(id);
         orderManagerService.removeIdFromIdsList(projectDTO.orderManager().getId(), id);
         return "Status deleted";
+    }
+
+
+    private Status findStatusById(long id){
+        Optional<Status> optional = statusRepository.findById(id);
+        if (optional.isEmpty()){
+            throw new EntityNotFoundException("Status not found");
+        }
+        return optional.get();
     }
 }
