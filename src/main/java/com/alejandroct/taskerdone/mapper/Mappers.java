@@ -36,15 +36,17 @@ public class Mappers {
     }
 
     public static TaskDTO getTaskDTO(Task task){
-        return new TaskDTO(task.getId(), task.getName(), task.getStatus(), task.getProject());
+        return new TaskDTO(task.getId(), task.getName(), Mappers.getStatusDTO(task.getStatus()), Mappers.getProjectDTO(task.getProject()));
     }
 
     public static Task getTask(TaskDTO taskDTO){
         Task task = new Task();
+        Project project = new Project();
+        project.setId(taskDTO.project().id());
         task.setId(taskDTO.id());
         task.setName(taskDTO.name());
-        task.setStatus(taskDTO.status());
-        task.setProject(taskDTO.project());
+        task.setStatus(Mappers.getStatus(taskDTO.status()));
+        task.setProject(project);
         return task;
     }
 }
